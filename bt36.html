@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang Chủ - Bài Tập Tổng Hợp (BT36)</title>
+  <style>
+    /* Reset & Stylings chung */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f4f6f9;
+      color: #333;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 260px;
+      background-color: #1e293b;
+      color: #fff;
+      padding: 20px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .profile-card {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #334155;
+      margin-bottom: 20px;
+    }
+    .profile-card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+      color: #38bdf8;
+    }
+    .profile-card p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+    .menu {
+      list-style: none;
+    }
+    .menu li {
+      margin-bottom: 8px;
+    }
+    .menu button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      color: #cbd5e1;
+      padding: 10px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+    .menu button:hover, .menu button.active {
+      background-color: #0ea5e9;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Main Content Area */
+    .content {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+    .exercise-section {
+      display: none;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+    }
+    .exercise-section.active {
+      display: block;
+    }
+    .exercise-section h3 {
+      margin-bottom: 15px;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8px;
+    }
+
+    /* Form Controls & Buttons */
+    input[type="text"], input[type="number"] {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      margin-right: 8px;
+      outline: none;
+    }
+    button.btn {
+      padding: 8px 16px;
+      background-color: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    button.btn:hover {
+      background-color: #1d4ed8;
+    }
+    .result-box {
+      margin-top: 15px;
+      padding: 12px;
+      background-color: #f8fafc;
+      border-left: 4px solid #2563eb;
+      font-weight: 500;
+    }
+
+    /* TK5: Accordion CSS */
+    .accordion-header {
+      background-color: #e2e8f0;
+      padding: 12px 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: 600;
+      user-select: none;
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      background-color: #f1f5f9;
+      border-radius: 0 0 4px 4px;
+    }
+    .accordion-content p {
+      padding: 16px;
+    }
+    .accordion-content.open {
+      max-height: 200px;
+    }
+
+    /* K4: Phân trang CSS */
+    .item-list {
+      list-style: none;
+      margin-bottom: 15px;
+    }
+    .item-list li {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .pagination {
+      display: flex;
+      gap: 5px;
+    }
+    .pagination button {
+      padding: 6px 12px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .pagination button.active {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+    }
+
+    /* K6: Dịch chuyển Khối CSS */
+    .playground {
+      width: 100%;
+      height: 300px;
+      border: 2px dashed #cbd5e1;
+      position: relative;
+      overflow: hidden;
+      background-color: #fafafa;
+    }
+    .movable-box {
+      width: 50px;
+      height: 50px;
+      background-color: #ef4444;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border-radius: 6px;
+      position: absolute;
+      top: 125px;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: top 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar: Menu & Thông tin cá nhân -->
+  <div class="sidebar">
+    <div class="profile-card">
+      <h2 id="student-name">Đặng Hoài Nhân</h2>
+      <p>MSSV: <span id="student-id">221A031199</span></p>
+      <p>Ngành: Công Nghệ Thông Tin</p>
+    </div>
+    <ul class="menu">
+      <li><button class="active" onclick="showSection('tk5', this)">TK5: Accordion</button></li>
+      <li><button onclick="showSection('tk7', this)">TK7: Chuỗi ngẫu nhiên</button></li>
+      <li><button onclick="showSection('tk8', this)">TK8: Hex sang RGB</button></li>
+      <li><button onclick="showSection('k4', this)">K4: Phân trang</button></li>
+      <li><button onclick="showSection('k6', this)">K6: Bàn phím (Up/Down)</button></li>
+      <li><button onclick="showSection('k8', this)">K8: Tính chỉ số BMI</button></li>
+    </ul>
+  </div>
+
+  <!-- Content: Khung hiển thị nội dung bài tập -->
+  <div class="content">
+
+    <!-- TK5: Accordion -->
+    <div id="tk5" class="exercise-section active">
+      <h3>Bài Tập TK5: Accordion Đơn Giản</h3>
+      <div class="accordion-header" onclick="toggleAccordion()">
+        Bấm vào đây để ẩn/hiện nội dung ▼
+      </div>
+      <div id="accordion-body" class="accordion-content">
+        <p>Đây là nội dung được ẩn bên trong Accordion. Khi bạn bấm vào tiêu đề, phần nội dung này sẽ trượt xuống/lên nhờ tính năng <code>classList.toggle()</code> và thuộc tính <code>max-height</code> trong CSS.</p>
+      </div>
+    </div>
+
+    <!-- TK7: Chuỗi ngẫu nhiên -->
+    <div id="tk7" class="exercise-section">
+      <h3>Bài Tập TK7: Tạo Mật Khẩu Ngẫu Nhiên</h3>
+      <p style="margin-bottom: 10px;">Tạo chuỗi mật khẩu 8 ký tự gồm chữ cái thường và số:</p>
+      <button class="btn" onclick="generatePassword()">Tạo Mật Khẩu</button>
+      <div id="tk7-result" class="result-box">Mật khẩu: --------</div>
+    </div>
+
+    <!-- TK8: Hex sang RGB -->
+    <div id="tk8" class="exercise-section">
+      <h3>Bài Tập TK8: Chuyển Đổi Màu Hex Sang RGB</h3>
+      <div style="margin-bottom: 10px;">
+        <input type="text" id="hex-input" placeholder="#FF0000 hoặc FF0000" value="#FF0000" />
+        <button class="btn" onclick="convertHexToRgb()">Chuyển Đổi</button>
+      </div>
+      <div id="tk8-result" class="result-box">Kết quả: rgb(255, 0, 0)</div>
+    </div>
+
+    <!-- K4: Phân trang -->
+    <div id="k4" class="exercise-section">
+      <h3>Bài Tập K4: Phân Trang Danh Sách (50 Mục)</h3>
+      <ul id="item-container" class="item-list"></ul>
+      <div id="pagination-container" class="pagination"></div>
+    </div>
+
+    <!-- K6: Sự kiện bàn phím -->
+    <div id="k6" class="exercise-section">
+      <h3>Bài Tập K6: Xử Lý Sự Kiện Bàn Phím</h3>
+      <p style="margin-bottom: 10px;">Sử dụng phím <b>MŨI TÊN LÊN (▲)</b> và <b>MŨI TÊN XUỐNG (▼)</b> trên bàn phím để di chuyển khối màu đỏ.</p>
+      <div class="playground">
+        <div id="box" class="movable-box">Box</div>
+      </div>
+    </div>
+
+    <!-- K8: Tính BMI -->
+    <div id="k8" class="exercise-section">
+      <h3>Bài Tập K8: Tính Chỉ Số BMI</h3>
+      <div style="margin-bottom: 10px; display: flex; gap: 10px; align-items: center;">
+        <input type="number" id="weight" placeholder="Cân nặng (kg)" step="0.1" />
+        <input type="number" id="height" placeholder="Chiều cao (m) VD: 1.7" step="0.01" />
+        <button class="btn" onclick="calculateBMI()">Tính BMI</button>
+      </div>
+      <div id="k8-result" class="result-box">Nhập thông tin và bấm "Tính BMI"</div>
+    </div>
+
+  </div>
+
+  <script>
+    /* Navigation: Chuyển đổi giữa các bài tập */
+    function showSection(sectionId, btn) {
+      document.querySelectorAll('.exercise-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(sectionId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    /* TK5: Accordion */
+    function toggleAccordion() {
+      const content = document.getElementById('accordion-body');
+      content.classList.toggle('open');
+    }
+
+    /* TK7: Tạo chuỗi ngẫu nhiên (8 ký tự: chữ thường + số) */
+    function generatePassword() {
+      const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      document.getElementById('tk7-result').innerText = `Mật khẩu: ${result}`;
+    }
+
+    /* TK8: Chuyển đổi Hex sang RGB */
+    function convertHexToRgb() {
+      let hex = document.getElementById('hex-input').value.trim();
+      if (hex.startsWith('#')) {
+        hex = hex.slice(1);
+      }
+      
+      if (hex.length === 3) {
+        hex = hex.split('').map(c => c + c).join('');
+      }
+
+      const isValid = /^[0-9A-Fa-f]{6}$/.test(hex);
+      if (!isValid) {
+        document.getElementById('tk8-result').innerText = 'Mã Hex không hợp lệ!';
+        return;
+      }
+
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+
+      document.getElementById('tk8-result').innerText = `Kết quả: rgb(${r}, ${g}, ${b})`;
+    }
+
+    /* K4: Phân trang danh sách (50 mục) */
+    const items = Array.from({ length: 50 }, (_, i) => `Mục danh sách thứ ${i + 1}`);
+    const itemsPerPage = 10;
+    let currentPage = 1;
+
+    function renderPagination() {
+      const totalPages = Math.ceil(items.length / itemsPerPage);
+      const listContainer = document.getElementById('item-container');
+      const pageContainer = document.getElementById('pagination-container');
+
+      listContainer.innerHTML = '';
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      items.slice(start, end).forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        listContainer.appendChild(li);
+      });
+
+      pageContainer.innerHTML = '';
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        if (i === currentPage) btn.classList.add('active');
+        btn.onclick = () => {
+          currentPage = i;
+          renderPagination();
+        };
+        pageContainer.appendChild(btn);
+      }
+    }
+    renderPagination();
+
+    /* K6: Xử lý sự kiện Bàn Phím (Di chuyển Box) */
+    let topPosition = 125;
+    const box = document.getElementById('box');
+    const minTop = 10;
+    const maxTop = 240;
+
+    window.addEventListener('keydown', (e) => {
+      if (!document.getElementById('k6').classList.contains('active')) return;
+
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        topPosition = Math.max(minTop, topPosition - 15);
+        box.style.top = topPosition + 'px';
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        topPosition = Math.min(maxTop, topPosition + 15);
+        box.style.top = topPosition + 'px';
+      }
+    });
+
+    /* K8: Tính BMI */
+    function calculateBMI() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      const height = parseFloat(document.getElementById('height').value);
+
+      if (!weight || !height || weight <= 0 || height <= 0) {
+        document.getElementById('k8-result').innerText = 'Vui lòng nhập đầy đủ cân nặng và chiều cao hợp lệ!';
+        return;
+      }
+
+      const bmi = (weight / (height * height)).toFixed(1);
+      let category = '';
+
+      if (bmi < 18.5) {
+        category = 'Thiếu cân';
+      } else if (bmi >= 18.5 && bmi <= 24.9) {
+        category = 'Bình thường';
+      } else {
+        category = 'Thừa cân';
+      }
+
+      document.getElementById('k8-result').innerHTML = `Chỉ số BMI: <b>${bmi}</b> — Phân loại: <b>${category}</b>`;
+    }
+  </script>
+</body>
+</html>
